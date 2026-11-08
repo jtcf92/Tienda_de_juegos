@@ -1,11 +1,16 @@
 package tienda.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.util.Properties;
 
+
 public class Configuracion {
+    private static final Logger log = LogManager.getLogger(Configuracion.class);
     private final Gestor gestor;
     private final ModoConexion modoConexion;
     private  final ModoSimulacion modoSimulacion;
@@ -14,6 +19,7 @@ public class Configuracion {
     private final String password;
     private final int poolMaxSize;
     private final int poolTimeoutMs;
+
     public Configuracion(String rutaFichero) throws IOException {
         //El properties es lo que nos permite leer el fichero de configuracion que hice
         //Asignando una clave valor
@@ -36,6 +42,10 @@ public class Configuracion {
 
         poolMaxSize = leerEnteroPositivo(props, "pool.maxSize", 5);
         poolTimeoutMs = leerEnteroPositivo(props, "pool.connectionTimeoutMs", 10000);
+        log.info("Configuracion cargada desde {}:{}",rutaFichero,this);
+        log.debug("Conexion: url {}, usuario={}",url,usuario);
+        log.debug("Pool:maxSize={},timeoutMs={}",poolMaxSize,poolTimeoutMs);
+
     }
 
     private Gestor leerGestor(Properties props){
@@ -85,7 +95,7 @@ public class Configuracion {
     }
         int numero;
     try {
-        numero=Integer.parseInt(clave);
+        numero=Integer.parseInt(texto);
     } catch (NumberFormatException e) {
         throw new IllegalArgumentException(
                 "La propiedad " + clave + " debe ser un numero entero: '" + texto.trim() + "'");
@@ -98,6 +108,10 @@ public class Configuracion {
 return numero;
     }
 
+    @Override
+    public String toString() {
+        return "Gestor=" + gestor + ", conexiones=" + modoConexion + ", simulacion=" + modoSimulacion;
+    }
     public Gestor getGestor() {
         return gestor;
     }
@@ -129,4 +143,5 @@ return numero;
     public int getPoolTimeoutMs() {
         return poolTimeoutMs;
     }
+
 }

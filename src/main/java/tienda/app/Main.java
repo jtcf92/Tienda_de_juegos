@@ -1,25 +1,42 @@
 package tienda.app;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tienda.config.Configuracion;
+import tienda.config.ConnectionProvider;
+import tienda.config.DriverManagerConnectionProvider;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
 public class Main {
-    static void main(String[] args) {
+
+    private static final Logger log = LogManager.getLogger(Main.class);
+
+    public static void main(String[] args) {
+        log.info("Arranque de la aplicacion");
+
         try {
-                Configuracion config = new Configuracion("application.properties");
-            System.out.println("Gestor:     " + config.getGestor());
-            System.out.println("Conexiones: " + config.getModoConexion());
-            System.out.println("Simulacion: " + config.getModoSimulacion());
-            System.out.println("URL:        " + config.getUrl());
-            System.out.println("Usuario:    " + config.getUsuario());
+            Configuracion config = new Configuracion("application.properties");
+
+            try (ConnectionProvider proveedor = new DriverManagerConnectionProvider(config);
+                 Connection con = proveedor.getConnection()) {
+
+                DatabaseMetaData meta = con.getMetaData();
+                log.info("Conectado a {} {}", meta.getDatabaseProductName(), meta.getDatabaseProductVersion());
+            }
+
         } catch (IOException e) {
-            System.out.println("No se encuentra el fichero de configuracion: " + e.getMessage());
-        }
-        catch (IllegalArgumentException iae){
-            System.out.println("Error en la configuracion: "+iae.getMessage());
+            log.error("No se encuentra el fichero de configuracion: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("Configuracion no valida: {}", e.getMessage());
+        } catch (SQLException e) {
+            log.error("No se pudo conectar con la base de datos: {}", e.getMessage());
         }
 
-
+        log.info("Fin de la aplicacion");
     }
 }
+
