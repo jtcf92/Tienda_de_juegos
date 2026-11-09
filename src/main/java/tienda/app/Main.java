@@ -19,15 +19,13 @@ public class Main {
         try {
             Configuracion config = new Configuracion("application.properties");
 
-            try (ConnectionProvider proveedor = ConnectionProviderFactory.crear(config);
-                 Connection con = proveedor.getConnection()) {
-
-                DatabaseMetaData meta = con.getMetaData();
-                log.info("Conectado a {} {}", meta.getDatabaseProductName(), meta.getDatabaseProductVersion());
+            try (ConnectionProvider proveedor = ConnectionProviderFactory.crear(config)) {
+                InicializadorDB inicializador = new InicializadorDB(proveedor);
+                inicializador.crearTablas();
             }
 
         } catch (IOException e) {
-            log.error("No se encuentra el fichero de configuracion: {}", e.getMessage());
+            log.error("No se encuentra un fichero necesario: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             log.error("Configuracion no valida: {}", e.getMessage());
         } catch (SQLException e) {
