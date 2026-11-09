@@ -2,10 +2,7 @@ package tienda.app;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tienda.config.Configuracion;
-import tienda.config.ConnectionProvider;
-import tienda.config.DriverManagerConnectionProvider;
-import tienda.config.HikariConnectionProvider;
+import tienda.config.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,8 +19,8 @@ public class Main {
         try {
             Configuracion config = new Configuracion("application.properties");
 
-            try (ConnectionProvider proveedor = new HikariConnectionProvider(config);
-                 Connection con = proveedor.getConnection();Connection con2 = proveedor.getConnection()) {
+            try (ConnectionProvider proveedor = ConnectionProviderFactory.crear(config);
+                 Connection con = proveedor.getConnection()) {
 
                 DatabaseMetaData meta = con.getMetaData();
                 log.info("Conectado a {} {}", meta.getDatabaseProductName(), meta.getDatabaseProductVersion());
