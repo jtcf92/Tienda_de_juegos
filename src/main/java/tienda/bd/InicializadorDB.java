@@ -1,6 +1,7 @@
-package tienda.config;
+package tienda.bd;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tienda.conexion.ConnectionProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class InicializadorDB {
-    Logger log = LogManager.getLogger(InicializadorDB.class);
+    private static final Logger log = LogManager.getLogger(InicializadorDB.class);
     private final ConnectionProvider proveedor;
 
     public InicializadorDB(ConnectionProvider proveedor) {

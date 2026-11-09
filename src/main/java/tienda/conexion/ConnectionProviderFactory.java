@@ -1,4 +1,7 @@
-package tienda.config;
+package tienda.conexion;
+
+import tienda.config.Configuracion;
+import tienda.config.enums.ModoConexion;
 
 import java.sql.SQLException;
 

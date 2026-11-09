@@ -2,6 +2,9 @@ package tienda.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tienda.config.enums.Gestor;
+import tienda.config.enums.ModoConexion;
+import tienda.config.enums.ModoSimulacion;
 
 import java.io.FileInputStream;
 

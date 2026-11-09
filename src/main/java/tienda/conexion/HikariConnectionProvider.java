@@ -1,10 +1,11 @@
-package tienda.config;
+package tienda.conexion;
 
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import tienda.config.Configuracion;
 
 import java.sql.Connection;
 import java.sql.SQLException;

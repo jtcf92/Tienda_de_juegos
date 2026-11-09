@@ -1,4 +1,4 @@
-package tienda.config;
+package tienda.config.enums;
 
 public enum ModoConexion {
     DRIVER_MANAGER,

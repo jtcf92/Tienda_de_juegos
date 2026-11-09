@@ -1,12 +1,14 @@
 package tienda.app;
 
+import tienda.bd.CargarDatos;
+import tienda.conexion.ConnectionProvider;
+import tienda.conexion.ConnectionProviderFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tienda.bd.InicializadorDB;
 import tienda.config.*;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 public class Main {
@@ -22,6 +24,8 @@ public class Main {
             try (ConnectionProvider proveedor = ConnectionProviderFactory.crear(config)) {
                 InicializadorDB inicializador = new InicializadorDB(proveedor);
                 inicializador.crearTablas();
+                CargarDatos carga = new CargarDatos(proveedor);
+                carga.cargar();
             }
 
         } catch (IOException e) {

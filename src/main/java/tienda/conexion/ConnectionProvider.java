@@ -1,4 +1,4 @@
-package tienda.config;
+package tienda.conexion;
 
 import java.sql.Connection;
 import java.sql.SQLException;
