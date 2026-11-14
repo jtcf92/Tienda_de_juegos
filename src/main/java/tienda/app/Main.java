@@ -7,8 +7,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tienda.bd.InicializadorDB;
 import tienda.config.*;
+import tienda.dao.JuegoDao;
+import tienda.dao.UsuarioDao;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Main {
@@ -26,6 +30,15 @@ public class Main {
                 inicializador.crearTablas();
                 CargarDatos carga = new CargarDatos(proveedor);
                 carga.cargar();
+                JuegoDao juegoDao = new JuegoDao();
+                UsuarioDao usuarioDao = new UsuarioDao();
+                try (Connection con = proveedor.getConnection()) {
+                    log.info("Juego 3: {}", juegoDao.buscarPorId(con, 3));
+                    juegoDao.actualizarPrecio(con, 3, new BigDecimal("39.99"));
+                    log.info("Juego 3 con nuevo precio: {}", juegoDao.buscarPorId(con, 3));
+                    log.info("Juego 99: {}", juegoDao.buscarPorId(con, 99));
+                    log.info("Usuario 1: {}", usuarioDao.buscarPorId(con, 1));
+                }
             }
 
         } catch (IOException e) {
