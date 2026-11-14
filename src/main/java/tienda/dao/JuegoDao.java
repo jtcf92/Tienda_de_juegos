@@ -58,7 +58,7 @@ public class JuegoDao {
     }
 
 
-    private Juego mapear(ResultSet rs) throws SQLException {
+    static Juego mapear(ResultSet rs) throws SQLException {
         return new Juego(
                 rs.getInt("id_juego"),
                 rs.getString("titulo"),

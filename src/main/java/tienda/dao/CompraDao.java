@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompraDao {
 
@@ -66,5 +68,19 @@ public class CompraDao {
                 rs.getObject("fecha", LocalDateTime.class),
                 EstadoCompra.valueOf(rs.getString("estado")),
                 rs.getBigDecimal("total"));
+    }
+    public List<Compra> buscarPorUsuario(Connection con, int idUsuario) throws SQLException {
+        String sql = "SELECT id_compra, id_usuario, fecha, estado, total FROM compra "
+                + "WHERE id_usuario = ? ORDER BY fecha DESC, id_compra DESC";
+        List<Compra> lista = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapear(rs));
+                }
+            }
+        }
+        return lista;
     }
 }

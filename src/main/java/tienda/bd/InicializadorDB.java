@@ -1,4 +1,5 @@
 package tienda.bd;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tienda.conexion.ConnectionProvider;
@@ -11,36 +12,51 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class InicializadorDB {
+
     private static final Logger log = LogManager.getLogger(InicializadorDB.class);
     private final ConnectionProvider proveedor;
 
     public InicializadorDB(ConnectionProvider proveedor) {
         this.proveedor = proveedor;
     }
-    public void crearTablas() throws IOException,SQLException {
-        String script = LeerRecurso("/schema.sql");
 
-        String [] sentencias = script.split(";");
-        try (Connection conector = proveedor.getConnection();
-             Statement st = conector.createStatement()){
-            for (String sentencia: sentencias) {
+    // Borra y crea las tablas ejecutando schema.sql sentencia a sentencia
+    public void crearTablas() throws IOException, SQLException {
+        String script = leerRecurso("/schema.sql");
+        String[] sentencias = script.split(";");
+
+        try (Connection con = proveedor.getConnection();
+             Statement st = con.createStatement()) {
+            int ejecutadas = 0;
+            for (String sentencia : sentencias) {
                 String sql = sentencia.trim();
-                if (!sql.isEmpty()){
+                if (!sql.isEmpty()) {
                     st.execute(sql);
+                    ejecutadas++;
                 }
             }
-
-        log.info("Se ham creado las tablas correctamente");
-
-
-        } catch (SQLException e) {
-            log.error("Error a la hora de crear tablas");
-            throw new RuntimeException(e);
+            log.info("Esquema creado: {} sentencias ejecutadas", ejecutadas);
         }
-
     }
-    private String LeerRecurso(String ruta) throws IOException {
-        InputStream lector = InicializadorDB.class.getResourceAsStream(ruta);
-        return new String(lector.readAllBytes(), StandardCharsets.UTF_8);
+
+    // Crea el procedimiento almacenado (solo MySQL)
+    public void crearProcedimiento() throws IOException, SQLException {
+        String sql = leerRecurso("/procedimiento_mysql.sql");
+        try (Connection con = proveedor.getConnection();
+             Statement st = con.createStatement()) {
+            st.execute("DROP PROCEDURE IF EXISTS sp_ventas_juego");
+            st.execute(sql);
+        }
+        log.info("Procedimiento almacenado sp_ventas_juego creado");
+    }
+
+    // Lee un fichero de src/main/resources como texto
+    private String leerRecurso(String ruta) throws IOException {
+        try (InputStream lector = InicializadorDB.class.getResourceAsStream(ruta)) {
+            if (lector == null) {
+                throw new IOException("No se encuentra el recurso " + ruta);
+            }
+            return new String(lector.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 }
