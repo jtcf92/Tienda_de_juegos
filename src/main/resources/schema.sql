@@ -54,7 +54,7 @@ CREATE TABLE compra (
     id_compra  INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT           NOT NULL,
     fecha      DATETIME      NOT NULL,
-    estado     VARCHAR(20)   NOT NULL CHECK (estado IN ('PENDIENTE', 'PAGADA', 'CANCELADA')),
+    estado     VARCHAR(20)   NOT NULL CHECK (estado = 'PENDIENTE' OR estado = 'PAGADA' OR estado = 'CANCELADA'),
     total      DECIMAL(10,2) NOT NULL CHECK (total >= 0),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
@@ -75,7 +75,7 @@ CREATE TABLE movimiento_stock (
     id_movimiento INT AUTO_INCREMENT PRIMARY KEY,
     id_juego      INT         NOT NULL,
     id_compra     INT         NULL,
-    tipo          VARCHAR(20) NOT NULL CHECK (tipo IN ('REPOSICION', 'VENTA', 'DEVOLUCION')),
+    tipo          VARCHAR(20) NOT NULL CHECK (tipo = 'REPOSICION' OR tipo = 'VENTA' OR tipo = 'DEVOLUCION'),
     cantidad      INT         NOT NULL CHECK (cantidad > 0),
     fecha         DATETIME    NOT NULL,
     FOREIGN KEY (id_juego)  REFERENCES juego(id_juego),
@@ -86,7 +86,7 @@ CREATE TABLE pago (
     id_pago   INT AUTO_INCREMENT PRIMARY KEY,
     id_compra INT           NOT NULL UNIQUE,
     importe   DECIMAL(10,2) NOT NULL CHECK (importe >= 0),
-    estado    VARCHAR(20)   NOT NULL CHECK (estado IN ('PAGADO', 'REEMBOLSADO')),
+    estado    VARCHAR(20)   NOT NULL CHECK (estado = 'PAGADO' OR estado = 'REEMBOLSADO'),
     fecha     DATETIME      NOT NULL,
     FOREIGN KEY (id_compra) REFERENCES compra(id_compra)
 );
