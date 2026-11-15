@@ -18,7 +18,7 @@ public class DriverManagerConnectionProvider implements ConnectionProvider {
         url= conf.getUrl();
         usuario=conf.getUsuario();
         password=conf.getPassword();
-        log.info("DriverManager inciado");
+        log.info("DriverManager iniiado");
     }
 
     @Override
